@@ -1,5 +1,6 @@
 #How does a relational database work
 by[`Christophe`](http://coding-geek.com/author/mawata/) | [sourcelink](http://coding-geek.com/how-databases-work/)    
+<br>
 When it comes to relational databases, I can’t help thinking that something is missing. They’re used everywhere. There are many different databases: from the small and useful SQLite to the powerful Teradata. But, there are only a few articles that explain how a database works. You can google by yourself “how does a relational database work” to see how few results there are. Moreover, those articles are short.  Now, if you look for the last trendy technologies (Big Data, NoSQL or JavaScript), you’ll find more in-depth articles explaining how they work.    
 <br>
 Are relational databases too old and too boring to be explained outside of university courses, research papers and books?    
@@ -26,7 +27,7 @@ For the more knowledgeable of you, this article is more or less divided into 3 p
 * An overview of the query optimization process
 * An overview of the transaction and buffer pool management   
 
-//TODO: here we should generate a content
+//TODO: here we should generate a content    
 [TOC]
 ##Back to basics
 ##回归基础
@@ -49,10 +50,10 @@ But when you deal with a large amount of data (I’m not talking about thousands
 <br>
 ####The concept
 ####基本概念
-The ***time complexity is used to see how long an algorithm will take for a given amount of data***. To describe this complexity, computer scientists use the mathematical big O notation. This notation is used with a function that describes how many operations an algorithm needs for a given amount of input data.
+The ***time complexity is used to see how long an algorithm will take for a given amount of data***. To describe this complexity, computer scientists use the mathematical big O notation. This notation is used with a function that describes how many operations an algorithm needs for a given amount of input data.    
 ***时间复杂度时用来衡量一个算法处理给定量的数据所消耗时间多少的***。为了描述这个复杂事物，计算机科学家们用数学上的大写字母O符号.这个符号用来描述了在方法中一个算法需要多少次操作才能处理完给定的输入数据量。
 <br>
-For example, when I say “this algorithm is in O( some_function() )”, it means that for a certain amount of data the algorithm needs some_function(a_certain_amount_of_data) operations to do its job.
+For example, when I say “this algorithm is in O( some_function() )”, it means that for a certain amount of data the algorithm needs some_function(a_certain_amount_of_data) operations to do its job.    
 例如，当我说”这个算法是在O(some_funtion())“时，这意味着这个算法为了处理确定量的数据需要执行some_function(a_certain_amount_of_data)操作.
 <br>
 ***What’s important*** is not the amount of data but ***the way the number of operations increases when the amount of data increases***. The time complexity doesn’t give the exact number of operations but a good idea.    
@@ -60,7 +61,7 @@ For example, when I say “this algorithm is in O( some_function() )”, it mean
 <br>
 ![time costs](http://coding-geek.com/wp-content/uploads/2015/08/TimeComplexity.png)    
 <br>
-In this figure, you can see the evolution of different types of complexities. I used a logarithmic scale to plot it. 
+In this figure, you can see the evolution of different types of complexities. I used a logarithmic scale to plot it.     
 在上图中，你可以看到不同类型的复杂度演变的方式。我用了对数尺度来描绘。
 In other words, the number of data is quickly increasing from 1 to 1 billion. We can see that:
 <br>
@@ -70,8 +71,8 @@ In other words, the number of data is quickly increasing from 1 to 1 billion. We
 * The two other complexities are quickly increasing.
 
 换句话讲，当数据的量从1到10亿，我们可以看到：
-* The <font color="#00ff00" >O(1)</font>即常数复杂度保持常数操作数（不然它就不叫常数复杂度了）。
-* The <font color="#ff0000" >O(log(n))</font> ***即使是上亿级的数据仍保持较低操作数***。
+* <font color="#00ff00" >O(1)</font>即常数复杂度保持常数操作数（不然它就不叫常数复杂度了）。
+* <font color="#ff0000" >O(log(n))</font> ***即使是上亿级的数据仍保持较低操作数***。
 * 最差的复杂度是<font color="#ff00ff">O(n<sup>2</sup>)</font> ***,它的操作数是爆炸式增长***。
 * 另外两种复杂度增长快速。
 
@@ -85,6 +86,7 @@ With a low amount of data, the difference between O(1) and O(n<sup>2</sup>) is n
 * An O(n*log(n)) algorithm will cost you 14 000 operations
 * An O(n<sup>2</sup>) algorithm will cost you 4 000 000 operations    
 <br>
+
 当小数据量时，O(1)与O(n<sup>2</sup>)之间的差距是微乎其微的。例如，假设你需要处理2000条数据的算法。
 <br>
 * O(1)算法需要1次操作
@@ -95,7 +97,7 @@ With a low amount of data, the difference between O(1) and O(n<sup>2</sup>) is n
 <br>
 
 The difference between O(1) and O(n<sup>2</sup>) seems a lot (4 million) but you’ll lose at max 2 ms, just the time to blink your eyes. Indeed, current processors can handle [`hundreds of millions of operations per second`](https://en.wikipedia.org/wiki/Instructions_per_second). This is why performance and optimization are not an issue in many IT projects.    
-O(1)与O(n<sup>2</sup>)之间的区别似乎非常大（4百万倍），但是你实际上最多多消耗2毫秒，和你眨眼的时间几乎相同。的确，现在的处理器能处理[`每秒数以百万计`](https://en.wikipedia.org/wiki/Instructions_per_second)。这就是为什么在许多IT工程中性能和优化并不是主要问题的原因。
+O(1)与O(n<sup>2</sup>)之间的区别似乎非常大（4百万倍），但是你实际上最多多消耗2毫秒，和你眨眼的时间几乎相同。的确，现在的处理器能处理[`每秒数以百万计指令`](https://en.wikipedia.org/wiki/Instructions_per_second)。这就是为什么在许多IT工程中性能和优化并不是主要问题的原因。
 <br>
 <br>
 <br>
@@ -107,6 +109,7 @@ As I said, it’s still important to know this concept when facing a huge number
 * An O(n*log(n)) algorithm will cost you 14 000 000 operations
 * An O(n<sup>2</sup>) algorithm will cost you 1 000 000 000 000 operations    
 <br>    
+
 正如我所说，当面对海量数据时，了解这个概念还是非常重要的。如果这时算法需要处理1000000条数据（对于数据库来说，这还不算大）：
 * O(1)算法需要1次操作
 * O(log(n))算法需要14次操作
@@ -127,13 +130,15 @@ To give you an idea:
 * A search in a well-balanced tree gives a result in O(log(n))
 * A search in an array gives a result in O(n)
 * The best sorting algorithms have an O(n*log(n)) complexity.
-* A bad sorting algorithm have an O(n<sup>2</sup>) complexity    
+* A bad sorting algorithm have an O(n<sup>2</sup>) complexity   
+
 给你一个概念：
 * 从一个哈希表中进行元素查找操作的复杂度是O(1)
 * 从一个平衡树中进行查找操作的复杂度时O(log(n))
 * 从数组中进行一次查找操作的复杂度O(n)
 * 最优的排序算法的复杂度是O(n*log(n))。
-* 差的排序算法的复杂度是O(n<sup>2</sup>)
+* 差的排序算法的复杂度是O(n<sup>2</sup>)    
+
 Note: In the next parts, we’ll see these algorithms and data structures.    
 注意：在之后的内容中，我们将会看到这些算法和数据结构。
 <br>
@@ -145,10 +150,12 @@ There are multiple types of time complexity:
 * the best case scenario
 * and the worst case scenario    
 <br>
+
 存在着多种种类的时间复杂度：
 * 平均情况
 * 最优情况
 * 以及最差情况
+
 The time complexity is often the worst case scenario.    
 时间复杂度经常是最差情况。
 <br>
@@ -159,6 +166,7 @@ I only talked about time complexity but complexity also works for:
 <br>
 <br>
 <br>
+
 我仅讨论时间复杂度，实际上复杂度还适用于：
 * 算法的内存消耗
 * 算法的磁盘I/O消耗
@@ -171,11 +179,12 @@ Of course there are worse complexities than n<sup>2</sup>, like:
 * n<sup>n</sup>: if you end-up with this complexity, you should ask yourself if IT is really your field…    
 <br>
 <br>
+
 当然也有比n<sup>2</sup>还差的复杂度情况，例如：
 * n<sup>4</sup>：糟糕透了！我将会提到一些如此复杂度的算法。
 * 3<sup>n</sup>：不能再糟了! 我们在本文中间部分将会看到这样复杂度的一个算法(而且在许多数据中，它确实在被使用着)。
 * n的阶乘 : 即使是很小数量级的数据，你也将永远得不到你想要的结果。
-* n<sup>n</sup>: 如果你最重的结果是这个算法复杂度，你应该好好问问自己到底是不是做IT的…    
+* n<sup>n</sup>: 如果你最终的结果是这个算法复杂度，你应该好好问问自己到底是不是做IT的…    
 
 Note: I didn’t give you the real definition of the big O notation but just the idea. You can read this article on [`Wikipedia`](https://en.wikipedia.org/wiki/Big_O_notation) for the real definition.    
 注意：我并没有给你O符号的真正定义，而只是抛出这个概念。如果你想找到真正的定义，你可以阅读这篇[`WikiPedia材料`](https://en.wikipedia.org/wiki/Big_O_notation)。
@@ -186,7 +195,7 @@ Note: I didn’t give you the real definition of the big O notation but just the
 ###归并排序
 
 What do you do when you need to sort a collection? What? You call the sort() function …  ok, good answer… But for a database you have to understand how this sort() function works.    
-如果你需要排序一个集合，你会怎么做？什么？你会调用sort()函数... 好吧，真是个好答案...但是对于数据库来说，你必须懂得sort()函数是如何生效的。
+如果你需要排序一个集合，你会怎么做？什么？你会调用sort()函数... 好吧，真是个好答案...但是对于数据库来说，你必须懂得sort()函数是如何工作的。
 
 There are several good sorting algorithms so I’ll focus on the most important one: ***the merge sort***. You might not understand right now why sorting data is useful but you should after the part on query optimization. Moreover, understanding the merge sort will help us later to understand a common database join operation called the ***merge join***.    
 因为有太多好的排序算法，所以我将专注于最重要的一个：***归并排序***。此时此刻你可能不是很明白为什么数据排序会有用，但是当完成这个部分的查询优化后，你肯定会懂得。进一步来说，掌握归并排序将有助于后续我们对一般数据库中合并连接操作的理解。
@@ -210,11 +219,12 @@ You can see on this figure that to construct the final sorted array of 8 element
 * and repeat 1,2,3 until you reach the last element of one of the arrays.
 * Then you take the rest of the elements of the other array to put them in the 8-element array.    
 <br>
+
 你能从图中看到最终排序好8个元素的数组的结构，你仅需要重复访问一次2个4元素数组。因为这2个4元素数组已经排序好了：
 * 1) 你需要比较两个数组当前的元素（第一次的时候current=first）
 * 2) 接下来将最小的那个放进8元素数组中
 * 3) 将你提取最小元素的那个数组指向下一个元素
-* 重复1，2，3步骤，指导你到达任何一个数组的最后一个元素.
+* 重复1，2，3步骤，直到你到达任何一个数组的最后一个元素.
 * 接下来，你需要将另外一个数组的剩余元素放进8元素数组中。
 
 
@@ -247,111 +257,174 @@ The merge sort breaks the problem into smaller problems then finds the results o
 * The division phase where the array is divided into smaller arrays
 * The sorting phase where the small arrays are put together (using the merge) to form a bigger array.    
 
+
 * 将一个数组才分为更小的数组称为分解阶段    
 * 将小的数组组合在一起（使用合并）组成更大的数组称为排序阶段。
  
 
 ####Division phase    
 ####分解阶段
-![Division phase](http://coding-geek.com/wp-content/uploads/2015/08/merge_sort_1.png)
-During the division phase, the array is divided into unitary arrays using 3 steps. The formal number of steps is log(N)  (since N=8, log(N) = 3).
+![Division phase](http://coding-geek.com/wp-content/uploads/2015/08/merge_sort_1.png)    
+During the division phase, the array is divided into unitary arrays using 3 steps. The formal number of steps is log(N)  (since N=8, log(N) = 3).    
 在分解阶段中，数组被拆分为单一的数组用了3步。步骤数量的表达式为log(N)(由于 N=8，log(N) ＝ 3)。
 
-How do I know that?
+How do I know that?    
+我是怎么知道的呢？
 
-I’m a genius! In one word: mathematics. The idea is that each step divides the size of the initial array by 2. The number of steps is the number of times you can divide the initial array by two. This is the exact definition of logarithm (in base 2).
-
- 
-
-####Sorting phase
-![Sorting phase](http://coding-geek.com/wp-content/uploads/2015/08/merge_sort_2.png)
-In the sorting phase, you start with the unitary arrays. During each step, you apply multiple merges and the overall cost is N=8 operations:
-
-In the first step you have 4 merges that cost 2 operations each
-In the second step you have 2 merges that cost 4 operations each
-In the third step you have 1 merge that costs 8 operations
-Since there are log(N) steps, the overall costs N * log(N) operations.
+~~I’m a genius~~ In one word: mathematics. The idea is that each step divides the size of the initial array by 2. The number of steps is the number of times you can divide the initial array by two. This is the exact definition of logarithm (in base 2).    
+~~我是个天才！~~总之：数学。每一步的核心是将最初的数组长度对半拆分。步骤数量就是你能二分原始数组的次数。这就是对数的定义（以2为底）。
 
  
 
-The power of the merge sort
+####Sorting phase    
+####排序阶段
+![Sorting phase](http://coding-geek.com/wp-content/uploads/2015/08/merge_sort_2.png)    
+In the sorting phase, you start with the unitary arrays. During each step, you apply multiple merges and the overall cost is N=8 operations:    
+<br>
+* In the first step you have 4 merges that cost 2 operations each
+* In the second step you have 2 merges that cost 4 operations each
+* In the third step you have 1 merge that costs 8 operations    
 
-Why this algorithm is so powerful?
+在排序阶段中，你将从单一数组开始。在每一步中，你使用多重汇集。总共需要N=8次操作：    
+* 第一步，你将做4次合并，每次需要2步操作
+* 第二步，你将进行2次合并，每次需要4步操作
+* 第三步，你讲做1次合并，每次需要8步操作
 
-Because:
-
-You can modify it in order to reduce the memory footprint, in a way that you don’t create new arrays but you directly modify the input array.
-Note: this kind of algorithms is called in-place.
-
-You can modify it in order to use disk space and a small amount of memory at the same time without a huge disk I/O penalty. The idea is to load in memory only the parts that are currently processed. This is important when you need to sort a multi-gigabyte table with only a memory buffer of 100 megabytes.
-Note: this kind of algorithms is called external sorting.
-
-You can modify it to run on multiple processes/threads/servers.
-For example, the distributed merge sort is one of the key components of Hadoop (which is THE framework in Big Data).
-
-This algorithm can turn lead into gold (true fact!).
- 
-
-This sorting algorithm is used in most (if not all) databases but it’s not the only one. If you want to know more, you can read this research paper that discusses the pros and cons of the common sorting algorithms in a database.
+Since there are log(N) steps, ***the overall costs N * log(N) operations***.
+因为总共有log(N)个步骤，***总共需要N * log(N)次操作***。
 
  
 
-Array, Tree and Hash table
+####The power of the merge sort     
+####归并排序的威力    
 
-Now that we understand the idea behind time complexity and sorting, I have to tell you about 3 data structures. It’s important because they’re the backbone of modern databases. I’ll also introduce the notion of database index.
+Why this algorithm is so powerful?    
+为什么这个算法有如此威力？    
+
+
+Because:    
+缘由如下：    
+
+* You can modify it in order to reduce the memory footprint, in a way that you don’t create new arrays but you directly modify the input array.
+Note: this kind of algorithms is called [`in-place`](https://en.wikipedia.org/wiki/In-place_algorithm).
+
+* You can modify it in order to use disk space and a small amount of memory at the same time without a huge disk I/O penalty. The idea is to load in memory only the parts that are currently processed. This is important when you need to sort a multi-gigabyte table with only a memory buffer of 100 megabytes.
+Note: this kind of algorithms is called [`external sorting`](https://en.wikipedia.org/wiki/External_sorting).
+
+* You can modify it to run on multiple processes/threads/servers.
+For example, the distributed merge sort is one of the key components of [`Hadoop`](https://hadoop.apache.org/docs/stable/api/org/apache/hadoop/mapreduce/Reducer.html) (which is THE framework in Big Data).
+
+* This algorithm can turn lead into gold (true fact!).
+
+* 你可以将它改造为低内存占用型，通过不再建立一个新的数组而是直接修改输入数组。
+注意：这种算法称为[原地算法](https://en.wikipedia.org/wiki/In-place_algorithm)
+* 你可以将它改造为使用磁盘空间和更小的内存占用的同时，避免大量的磁盘I/O消耗。这个算法的理念是每次只加载当前处理的部分数据进入内存。当你只有100M内存空间却需要对数G大小的表进行排序时，这个算法将十分重要。
+注意：这种算法称为[外部排序](https://en.wikipedia.org/wiki/External_sorting)。
+* 你可以将这个算法改造为运行在多处理器/线程/服务器。
+例如，分布式归并排序就是[`Hadoop`](https://hadoop.apache.org/docs/stable/api/org/apache/hadoop/mapreduce/Reducer.html)的核心模块（一种大数据框架）。
+* 这个算法能点石成金（真的！）。   
+
+
+This sorting algorithm is used in most (if not all) databases but it’s not the only one. If you want to know more, you can read this [`research paper`](http://wwwlgis.informatik.uni-kl.de/archiv/wwwdvs.informatik.uni-kl.de/courses/DBSREAL/SS2005/Vorlesungsunterlagen/Implementing_Sorting.pdf) that discusses the pros and cons of the common sorting algorithms in a database.    
+这个排序算法应用于大多数（好吧，如果不是全部）数据库，但是它不是唯一的。如果你想了解更多，你可以阅读这个[研究材料](http://wwwlgis.informatik.uni-kl.de/archiv/wwwdvs.informatik.uni-kl.de/courses/DBSREAL/SS2005/Vorlesungsunterlagen/Implementing_Sorting.pdf)，这里面讨论了数据库中所使用到的通用排序算法的优缺点。
+ 
+
+###Array, Tree and Hash table
+###数组，树以及哈希表
+
+Now that we understand the idea behind time complexity and sorting, I have to tell you about 3 data structures. It’s important because they’re ***the backbone of modern databases***. I’ll also introduce the notion of ***database index***.    
+我们已经了解时间复杂度和排序背后的机理，我必须给你讲3种数据结构。它们十分重要，因为它们是***现代数据库的支柱***。同时我也会介绍***数据库索引***。
 
 
 
-Array
+####Array
 
-The two-dimensional array is the simplest data structure. A table can be seen as an array. For example:
+The two-dimensional array is the simplest data structure. A table can be seen as an array. For example:    
+二维数组是最简单的数据结构。表格也能看成是一个数组。如下：
 ![Array](http://coding-geek.com/wp-content/uploads/2015/08/array.png)
 This 2-dimensional array is a table with rows and columns:
+<br>
+* Each row represents a subject
+* The columns the features that describe the subjects.
+* Each column stores a certain type of data (integer, string, date …).    
 
-Each row represents a subject
-The columns the features that describe the subjects.
-Each column stores a certain type of data (integer, string, date …).
-Though it’s great to store and visualize data, when you need to look for a specific value it sucks.
+二维数组就是一个行列表：
+* 每行表示一个对象
+* 列表示描述对象的特性
+* 每列存储一种特定类型的数据(integer，string，data ...)。    
 
-For example, if you want to find all the guys who work in the UK, you’ll have to look at each row to find if the row belongs to the UK. This will cost you N operations (N being the number of rows) which is not bad but could there be a faster way? This is where trees come into play.
+
+Though it’s great to store and visualize data, when you need to look for a specific value it sucks.    
+尽管这样存储和数据可视化都非常好，但是当你面对特殊数据时，这个就很糟了。
+
+For example, ***if you want to find all the guys*** who work in the UK, you’ll have to look at each row to find if the row belongs to the UK. ***This will cost you N operations*** (N being the number of rows) which is not bad but could there be a faster way? This is where trees come into play.    
+例如，***如果你想找到所有工作在UK的人***，你将不得不查看每一行看这一行是否属于UK。***这将消耗你N步操作***（N是行数），这并不算太坏，但是否又有更好的方式呢？这就是为什么要引入tree。 
+
 
  
 
 Note: Most modern databases provide advanced arrays to store tables efficiently like heap-organized tables or index-organized tables. But it doesn’t change the problem of fast searching for a specific condition on a group of columns.
+注意：大多数现代数据库提供了增强型数组
 
 
+####Tree and database index
+####树和数据库索引
 
-Tree and database index
+A binary search tree is a binary tree with a special property, the key in each node must be:    
+<br>
+* greater than all keys stored in the left sub-tree
+* smaller than all keys stored in the right sub-tree    
 
-A binary search tree is a binary tree with a special property, the key in each node must be:
 
-greater than all keys stored in the left sub-tree
-smaller than all keys stored in the right sub-tree
+二叉搜索树时一种带有特殊属性的二叉树，每个节点的键值必须满足：
+<br>
+* 大于所有左子树的键值
+* 小于所有右子树的键值
  
 
 Let’s see what it means visually
+让我们直观的看看上面的含义
 
-The idea
+**The idea**
+**概念**
 ![Binary Search Tree](http://coding-geek.com/wp-content/uploads/2015/08/BST.png)
  
 
 This tree has N=15 elements. Let’s say I’m looking for 208:
+<br>
+* I start with the root whose key is 136. Since 136<208, I look at the right sub-tree of the node 136.
+* 398>208 so, I look at the left sub-tree of the node 398
+* 250>208 so, I look at the left sub-tree of the node 250
+* 200<208 so, I look at the right sub-tree of the node 200. But 200 doesn’t have a right subtree, ***the value doesn’t exist*** (because if it did exist it would be in the right subtree of 200)    
 
-I start with the root whose key is 136. Since 136<208, I look at the right sub-tree of the node 136.
-398>208 so, I look at the left sub-tree of the node 398
-250>208 so, I look at the left sub-tree of the node 250
-200<208 so, I look at the right sub-tree of the node 200. But 200 doesn’t have a right subtree, the value doesn’t exist (because if it did exist it would be in the right subtree of 200)
-Now let’s say I’m looking for 40
+这棵树有 N=15 个节点构成。假设我们搜索208：
+<br>
+* 我将从根节点的键值136开始，因为136<208，所以我们查找136节点的右子树。
+* 398>208 所以，我们查找398节点的左子树
+* 250>208 所以，我们查找250节点的左子树
+* 200<208 所以，我们查找200节点的右子树。但是200节点没有右子树，***这个值不存在***（如果它存在，那么它必定在200节点的右子树中)
 
-I start with the root whose key is 136. Since 136>40, I look at the left sub-tree of the node 136.
-80>40 so, I look at the left sub-tree of the node 80
-40= 40, the node exists. I extract the id of the row inside the node (it’s not in the figure) and look at the table for the given row id.
-Knowing the row id let me know where the data is precisely on the table and therefore I can get it instantly.
-In the end, both searches cost me the number of levels inside the tree. If you read carefully the part on the merge sort you should see that there are log(N) levels. So the cost of the search is log(N), not bad!
+Now let’s say I’m looking for 40    
+<br>
+* I start with the root whose key is 136. Since 136>40, I look at the left sub-tree of the node 136.
+* 80>40 so, I look at the left sub-tree of the node 80
+* 40= 40, ***the node exists***. I extract the id of the row inside the node (it’s not in the figure) and look at the table for the given row id.
+* Knowing the row id let me know where the data is precisely on the table and therefore I can get it instantly.    
+
+接下来假设我们查找40    
+* 我将从根节点的键值136开始，因为136>40，所以我们查找136节点的左子树。
+* 80>40 所以，我们查找80节点的右子树
+* 40=40，***节点存在***。提取出节点的行号(这个没在图上)，然后根据行号查询数据表。
+* 获得了行号，我们就可以知道数据在表上的精确位置，因此我们就能立即获取到数据。
+
+
+In the end, both searches cost me the number of levels inside the tree. If you read carefully the part on the merge sort you should see that there are log(N) levels. So the ***cost of the search is log(N)***, not bad!    
+最后，这两个查询都消耗树的层数次操作。如果你仔细地阅读了归并排序部分，那么就应该知道这里是log(N)层级。所以知道***搜索算法的时间复杂度是log(N)***，不错！
 
  
 
-Back to our problem
+***Back to our problem***
+***回到我们的问题上***
 
 But this stuff is very abstract so let’s go back to our problem. Instead of a stupid integer, imagine the string that represents the country of someone in the previous table. Suppose you have a tree that contains the column “country” of the table:
 
