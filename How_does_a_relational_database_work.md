@@ -1,8 +1,5 @@
 #How does a relational database work
->by`Christophe`<br>
->[sourcelink](http://coding-geek.com/how-databases-work/)
-
----
+by[`Christophe`](http://coding-geek.com/author/mawata/) | [sourcelink](http://coding-geek.com/how-databases-work/)    
 When it comes to relational databases, I can’t help thinking that something is missing. They’re used everywhere. There are many different databases: from the small and useful SQLite to the powerful Teradata. But, there are only a few articles that explain how a database works. You can google by yourself “how does a relational database work” to see how few results there are. Moreover, those articles are short.  Now, if you look for the last trendy technologies (Big Data, NoSQL or JavaScript), you’ll find more in-depth articles explaining how they work.    
 <br>
 Are relational databases too old and too boring to be explained outside of university courses, research papers and books?    
@@ -28,43 +25,58 @@ For the more knowledgeable of you, this article is more or less divided into 3 p
 * An overview of low-level and high-level database components
 * An overview of the query optimization process
 * An overview of the transaction and buffer pool management   
-<br>
-<br>
-<br>
 
-//TODO: here we should generate a content    
+//TODO: here we should generate a content
 [TOC]
 ##Back to basics
-A long time ago (in a galaxy far, far away….) developers had to know exactly the number of operations they were coding. They knew by heart their algorithms and data structures because they couldn’t afford to waste the CPU and memory of their slow computers.
+##回归基础
+A long time ago (in a galaxy far, far away….) developers had to know exactly the number of operations they were coding. They knew by heart their algorithms and data structures because they couldn’t afford to waste the CPU and memory of their slow computers.    
+很久以前（估计有银河系诞生那么久远...），开发人员不得不精通非常多的编程操作。因为他们不能浪费他们龟速电脑上哪怕一丁点儿的CPU和内存，他们必须将这些算法和相应的数据结构深深的记在心里。
 <br>
-In this part, I’ll remind you about some of these concepts because they are essential to understand a database. I’ll also introduce the notion of ***database index***.
+In this part, I’ll remind you about some of these concepts because they are essential to understand a database. I’ll also introduce the notion of ***database index***.    
+在这个部分，我将带你们回忆一些这样的概念，因为它们对于理解数据库是非常必要的。我也将会介绍***数据库索引***这个概念。
 <br>
 <br>
 <br>
-###O(1)) vs O(n2)
-Nowadays, many developers don’t care about time complexity … and they’re right!
+###O(1)) vs O(n<sup>2</sup>)
+Nowadays, many developers don’t care about time complexity … and they’re right!    
+现在，许多开发者不再关心时间复杂度...他们是对的！
 <br>
 But when you deal with a large amount of data (I’m not talking about thousands) or if you’re fighting for milliseconds, it becomes critical to understand this concept. And guess what, databases have to deal with both situations! I won’t bore you a long time, just the time to get the idea. This will help us later to understand the concept of ***cost based optimization***.
+但是当你们正面临着一个大数据量（我谈论的并不是几千这个级别的数据）的处理问题时或者正努力为毫秒级的性能提升拼命时，理解这个概念就非常的重要了。可是你们猜怎么着？数据库不得不处理这两种极端情况！我不会占用你们太多时间，只需要将这个点子讲清楚就够了。这将会帮助我们以后理解***成本导向最优化***的概念。
 <br>
 <br>
 <br>
 ####The concept
+####基本概念
 The ***time complexity is used to see how long an algorithm will take for a given amount of data***. To describe this complexity, computer scientists use the mathematical big O notation. This notation is used with a function that describes how many operations an algorithm needs for a given amount of input data.
+***时间复杂度时用来衡量一个算法处理给定量的数据所消耗时间多少的***。为了描述这个复杂事物，计算机科学家们用数学上的大写字母O符号.这个符号用来描述了在方法中一个算法需要多少次操作才能处理完给定的输入数据量。
 <br>
 For example, when I say “this algorithm is in O( some_function() )”, it means that for a certain amount of data the algorithm needs some_function(a_certain_amount_of_data) operations to do its job.
+例如，当我说”这个算法是在O(some_funtion())“时，这意味着这个算法为了处理确定量的数据需要执行some_function(a_certain_amount_of_data)操作.
 <br>
 ***What’s important*** is not the amount of data but ***the way the number of operations increases when the amount of data increases***. The time complexity doesn’t give the exact number of operations but a good idea.    
+***最重要的***不是数据量，而是***随着数据量的增加，操作步骤需要随之变化的方式***。时间复杂度不是给出确切的操作数量而是一个概念。
 <br>
 ![time costs](http://coding-geek.com/wp-content/uploads/2015/08/TimeComplexity.png)    
 <br>
-In this figure, you can see the evolution of different types of complexities. I used a logarithmic scale to plot it. In other words, the number of data is quickly increasing from 1 to 1 billion. We can see that:
+In this figure, you can see the evolution of different types of complexities. I used a logarithmic scale to plot it. 
+在上图中，你可以看到不同类型的复杂度演变的方式。我用了对数尺度来描绘。
+In other words, the number of data is quickly increasing from 1 to 1 billion. We can see that:
 <br>
 * The <font color="#00ff00" >O(1)</font> or constant complexity stays constant (otherwise it wouldn’t be called constant complexity).
 * The <font color="#ff0000" >O(log(n))</font> ***stays low even with billions of data***.
 * The worst complexity is the <font color="#ff00ff">O(n<sup>2</sup>)</font> ***where the number of operations quickly explodes***.
 * The two other complexities are quickly increasing.
 
+换句话讲，当数据的量从1到10亿，我们可以看到：
+* The <font color="#00ff00" >O(1)</font>即常数复杂度保持常数操作数（不然它就不叫常数复杂度了）。
+* The <font color="#ff0000" >O(log(n))</font> ***即使是上亿级的数据仍保持较低操作数***。
+* 最差的复杂度是<font color="#ff00ff">O(n<sup>2</sup>)</font> ***,它的操作数是爆炸式增长***。
+* 另外两种复杂度增长快速。
+
 ####Examples
+####举例
 With a low amount of data, the difference between O(1) and O(n<sup>2</sup>) is negligible. For example, let’s say you have an algorithm that needs to process 2000 elements.
 <br>
 * An O(1) algorithm will cost you 1 operation
@@ -73,8 +85,17 @@ With a low amount of data, the difference between O(1) and O(n<sup>2</sup>) is n
 * An O(n*log(n)) algorithm will cost you 14 000 operations
 * An O(n<sup>2</sup>) algorithm will cost you 4 000 000 operations    
 <br>
+当小数据量时，O(1)与O(n<sup>2</sup>)之间的差距是微乎其微的。例如，假设你需要处理2000条数据的算法。
+<br>
+* O(1)算法需要1次操作
+* O(log(n))算法需要7次操作
+* O(n)算法需要2000次操作
+* O(n*log(n))算法需要14000次操作
+* O(n<sup>2</sup>)算法需要4000000次操作
+<br>
 
-The difference between O(1) and O(n<sup>2</sup>) seems a lot (4 million) but you’ll lose at max 2 ms, just the time to blink your eyes. Indeed, current processors can handle `hundreds of millions of operations per second`. This is why performance and optimization are not an issue in many IT projects.
+The difference between O(1) and O(n<sup>2</sup>) seems a lot (4 million) but you’ll lose at max 2 ms, just the time to blink your eyes. Indeed, current processors can handle [`hundreds of millions of operations per second`](https://en.wikipedia.org/wiki/Instructions_per_second). This is why performance and optimization are not an issue in many IT projects.    
+O(1)与O(n<sup>2</sup>)之间的区别似乎非常大（4百万倍），但是你实际上最多多消耗2毫秒，和你眨眼的时间几乎相同。的确，现在的处理器能处理[`每秒数以百万计`](https://en.wikipedia.org/wiki/Instructions_per_second)。这就是为什么在许多IT工程中性能和优化并不是主要问题的原因。
 <br>
 <br>
 <br>
@@ -85,23 +106,36 @@ As I said, it’s still important to know this concept when facing a huge number
 * An O(n) algorithm will cost you 1 000 000 operations
 * An O(n*log(n)) algorithm will cost you 14 000 000 operations
 * An O(n<sup>2</sup>) algorithm will cost you 1 000 000 000 000 operations    
-<br>
+<br>    
+正如我所说，当面对海量数据时，了解这个概念还是非常重要的。如果这时算法需要处理1000000条数据（对于数据库来说，这还不算大）：
+* O(1)算法需要1次操作
+* O(log(n))算法需要14次操作
+* O(n)算法需要1000000次操作
+* O(n*log(n))算法需要14000000次操作
+* O(n<sup>2</sup>)算法需要1000000000000次操作
 
-I didn’t do the math but I’d say with the O(n<sup>2</sup>) algorithm you have the time to take a coffee (even a second one!). If you put another 0 on the amount of data, you’ll have the time to take a long nap.
+I didn’t do the math but I’d say with the O(n<sup>2</sup>) algorithm you have the time to take a coffee (even a second one!). If you put another 0 on the amount of data, you’ll have the time to take a long nap.    
+我没有详细算过，但是我想如果采用O(n<sup>2</sup>)算法，你可以有时间来杯咖啡了（甚至再来一杯！）。如果你又将数据数量级提升一个0，你可以有时间去打个盹儿了。
 <br>
 <br>
 <br>
 ####Going deeper
-
+####继续深入
 To give you an idea:
 
 * A search in a good hash table gives an element in O(1)
 * A search in a well-balanced tree gives a result in O(log(n))
 * A search in an array gives a result in O(n)
 * The best sorting algorithms have an O(n*log(n)) complexity.
-* A bad sorting algorithm have an O(n2) complexity
-
-Note: In the next parts, we’ll see these algorithms and data structures.
+* A bad sorting algorithm have an O(n<sup>2</sup>) complexity    
+给你一个概念：
+* 从一个哈希表中进行元素查找操作的复杂度是O(1)
+* 从一个平衡树中进行查找操作的复杂度时O(log(n))
+* 从数组中进行一次查找操作的复杂度O(n)
+* 最优的排序算法的复杂度是O(n*log(n))。
+* 差的排序算法的复杂度是O(n<sup>2</sup>)
+Note: In the next parts, we’ll see these algorithms and data structures.    
+注意：在之后的内容中，我们将会看到这些算法和数据结构。
 <br>
 <br>
 <br>
@@ -109,44 +143,64 @@ There are multiple types of time complexity:
 <br>
 * the average case scenario
 * the best case scenario
-* and the worst case scenario
+* and the worst case scenario    
 <br>
-The time complexity is often the worst case scenario.
+存在着多种种类的时间复杂度：
+* 平均情况
+* 最优情况
+* 以及最差情况
+The time complexity is often the worst case scenario.    
+时间复杂度经常是最差情况。
 <br>
 I only talked about time complexity but complexity also works for:
 <br>
 * the memory consumption of an algorithm.
-* the disk I/O consumption of an algorithm.
+* the disk I/O consumption of an algorithm.    
 <br>
 <br>
 <br>
+我仅讨论时间复杂度，实际上复杂度还适用于：
+* 算法的内存消耗
+* 算法的磁盘I/O消耗
 
-Of course there are worse complexities than n2, like:
+Of course there are worse complexities than n<sup>2</sup>, like:
 <br>
-* n4: that sucks! Some of the algorithms I’ll mention have this complexity.
-* 3n: that sucks even more! One of the algorithms we’re going to see in the middle of this article has this complexity (and it’s really used in many databases).
+* n<sup>4</sup>: that sucks! Some of the algorithms I’ll mention have this complexity.
+* 3<sup>n</sup>: that sucks even more! One of the algorithms we’re going to see in the middle of this article has this complexity (and it’s really used in many databases).
 * factorial n : you’ll never get your results, even with a low amount of data.
-* nn: if you end-up with this complexity, you should ask yourself if IT is really your field…
+* n<sup>n</sup>: if you end-up with this complexity, you should ask yourself if IT is really your field…    
 <br>
 <br>
+当然也有比n<sup>2</sup>还差的复杂度情况，例如：
+* n<sup>4</sup>：糟糕透了！我将会提到一些如此复杂度的算法。
+* 3<sup>n</sup>：不能再糟了! 我们在本文中间部分将会看到这样复杂度的一个算法(而且在许多数据中，它确实在被使用着)。
+* n的阶乘 : 即使是很小数量级的数据，你也将永远得不到你想要的结果。
+* n<sup>n</sup>: 如果你最重的结果是这个算法复杂度，你应该好好问问自己到底是不是做IT的…    
 
-Note: I didn’t give you the real definition of the big O notation but just the idea. You can read this article on [`Wikipedia`](https://en.wikipedia.org/wiki/Big_O_notation) for the real definition.
+Note: I didn’t give you the real definition of the big O notation but just the idea. You can read this article on [`Wikipedia`](https://en.wikipedia.org/wiki/Big_O_notation) for the real definition.    
+注意：我并没有给你O符号的真正定义，而只是抛出这个概念。如果你想找到真正的定义，你可以阅读这篇[`WikiPedia材料`](https://en.wikipedia.org/wiki/Big_O_notation)。
 <br>
 <br>
 <br>
 ###Merge Sort
+###归并排序
 
-What do you do when you need to sort a collection? What? You call the sort() function …  ok, good answer… But for a database you have to understand how this sort() function works.
+What do you do when you need to sort a collection? What? You call the sort() function …  ok, good answer… But for a database you have to understand how this sort() function works.    
+如果你需要排序一个集合，你会怎么做？什么？你会调用sort()函数... 好吧，真是个好答案...但是对于数据库来说，你必须懂得sort()函数是如何生效的。
 
-There are several good sorting algorithms so I’ll focus on the most important one: the merge sort. You might not understand right now why sorting data is useful but you should after the part on query optimization. Moreover, understanding the merge sort will help us later to understand a common database join operation called the merge join.
+There are several good sorting algorithms so I’ll focus on the most important one: ***the merge sort***. You might not understand right now why sorting data is useful but you should after the part on query optimization. Moreover, understanding the merge sort will help us later to understand a common database join operation called the ***merge join***.    
+因为有太多好的排序算法，所以我将专注于最重要的一个：***归并排序***。此时此刻你可能不是很明白为什么数据排序会有用，但是当完成这个部分的查询优化后，你肯定会懂得。进一步来说，掌握归并排序将有助于后续我们对一般数据库中合并连接操作的理解。
 
  
 
 ####Merge
+####合并
 
-Like many useful algorithms, the merge sort is based on a trick: merging 2 sorted arrays of size N/2 into a N-element sorted array only costs N operations. This operation is called a merge.
+Like many useful algorithms, the merge sort is based on a trick: merging 2 sorted arrays of size N/2 into a N-element sorted array only costs N operations. This operation is called a merge.    
+如同许多有用的算法，归并排序是基础的技巧：合并2个长度为N/2的有序数组为一个有N个元素的有序数组仅消耗N次操作。这个操作称为一次合并。
 
-Let’s see what this means with a simple example:
+Let’s see what this means with a simple example:    
+让我们通过一个简单例子来看看其含义：
 ![Merge](http://coding-geek.com/wp-content/uploads/2015/08/merge_sort_3.png)
 You can see on this figure that to construct the final sorted array of 8 elements, you only need to iterate one time in the 2 4-element arrays. Since both 4-element arrays are already sorted:
 
@@ -154,14 +208,24 @@ You can see on this figure that to construct the final sorted array of 8 element
 * 2) then take the lowest one to put it in the 8-element array
 * 3) and go to the next element in the array you took the lowest element
 * and repeat 1,2,3 until you reach the last element of one of the arrays.
-* Then you take the rest of the elements of the other array to put them in the 8-element array.
+* Then you take the rest of the elements of the other array to put them in the 8-element array.    
 <br>
+你能从图中看到最终排序好8个元素的数组的结构，你仅需要重复访问一次2个4元素数组。因为这2个4元素数组已经排序好了：
+* 1) 你需要比较两个数组当前的元素（第一次的时候current=first）
+* 2) 接下来将最小的那个放进8元素数组中
+* 3) 将你提取最小元素的那个数组指向下一个元素
+* 重复1，2，3步骤，指导你到达任何一个数组的最后一个元素.
+* 接下来，你需要将另外一个数组的剩余元素放进8元素数组中。
 
-This works because both 4-element arrays are sorted and therefore you don’t need to “go back” in these arrays.
+
+
+This works because both 4-element arrays are sorted and therefore you don’t need to “go back” in these arrays.   
+这个算法之所以生效是因为4元素数组都是已经排序好的，因此你不必在这些数组中进行"回退"。
 
 
 
-Now that we’ve understood this trick, here is my pseudocode of the merge sort.
+Now that we’ve understood this trick, here is my pseudocode of the merge sort.    
+现在我们懂得了这个技巧，如下所示是我的合并排序伪代码。
 ```
 array mergeSort(array a)
    if(length(a)==1)
@@ -177,15 +241,21 @@ array mergeSort(array a)
    array result := merge(new_left_array,new_right_array);
    return result;
 ```
-The merge sort breaks the problem into smaller problems then finds the results of the smaller problems to get the result of the initial problem (note: this kind of algorithms is called divide and conquer). If you don’t understand this algorithm, don’t worry; I didn’t understand it the first time I saw it. If it can help you, I see this algorithm as a two-phase algorithm:
+The merge sort breaks the problem into smaller problems then finds the results of the smaller problems to get the result of the initial problem (note: this kind of algorithms is called divide and conquer). If you don’t understand this algorithm, don’t worry; I didn’t understand it the first time I saw it. If it can help you, I see this algorithm as a two-phase algorithm:    
+归并排序将问题拆分为更小的问题，再求解这些小问题结果，从而获得最初的问题结果（注意：这类算法叫做分治法）。如果你不懂这个算法，不用担心；我最初看这个算法时也是不懂。我将这个算法看作两个阶段算法，希望对你们有所帮助：
 
-The division phase where the array is divided into smaller arrays
-The sorting phase where the small arrays are put together (using the merge) to form a bigger array.
+* The division phase where the array is divided into smaller arrays
+* The sorting phase where the small arrays are put together (using the merge) to form a bigger array.    
+
+* 将一个数组才分为更小的数组称为分解阶段    
+* 将小的数组组合在一起（使用合并）组成更大的数组称为排序阶段。
  
 
-Division phase
+####Division phase    
+####分解阶段
 ![Division phase](http://coding-geek.com/wp-content/uploads/2015/08/merge_sort_1.png)
 During the division phase, the array is divided into unitary arrays using 3 steps. The formal number of steps is log(N)  (since N=8, log(N) = 3).
+在分解阶段中，数组被拆分为单一的数组用了3步。步骤数量的表达式为log(N)(由于 N=8，log(N) ＝ 3)。
 
 How do I know that?
 
@@ -193,7 +263,7 @@ I’m a genius! In one word: mathematics. The idea is that each step divides the
 
  
 
-Sorting phase
+####Sorting phase
 ![Sorting phase](http://coding-geek.com/wp-content/uploads/2015/08/merge_sort_2.png)
 In the sorting phase, you start with the unitary arrays. During each step, you apply multiple merges and the overall cost is N=8 operations:
 
