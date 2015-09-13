@@ -288,9 +288,9 @@ In the sorting phase, you start with the unitary arrays. During each step, you a
 在排序阶段中，你将从单一数组开始。在每一步中，你使用多重汇集。总共需要N=8次操作：    
 * 第一步，你将做4次合并，每次需要2步操作
 * 第二步，你将进行2次合并，每次需要4步操作
-* 第三步，你讲做1次合并，每次需要8步操作
+* 第三步，你将做1次合并，每次需要8步操作
 
-Since there are log(N) steps, ***the overall costs N * log(N) operations***.
+Since there are log(N) steps, ***the overall costs N * log(N) operations***.    
 因为总共有log(N)个步骤，***总共需要N * log(N)次操作***。
 
  
@@ -341,7 +341,7 @@ Now that we understand the idea behind time complexity and sorting, I have to te
 
 The two-dimensional array is the simplest data structure. A table can be seen as an array. For example:    
 二维数组是最简单的数据结构。表格也能看成是一个数组。如下：
-![Array](http://coding-geek.com/wp-content/uploads/2015/08/array.png)
+![Array](http://coding-geek.com/wp-content/uploads/2015/08/array.png)    
 This 2-dimensional array is a table with rows and columns:
 <br>
 * Each row represents a subject
@@ -351,20 +351,20 @@ This 2-dimensional array is a table with rows and columns:
 二维数组就是一个行列表：
 * 每行表示一个对象
 * 列表示描述对象的特性
-* 每列存储一种特定类型的数据(integer，string，data ...)。    
+* 每列存储一种特定类型的数据(整型，字符串，日期 ...)。    
 
 
 Though it’s great to store and visualize data, when you need to look for a specific value it sucks.    
 尽管这样存储和数据可视化都非常好，但是当你面对特殊数据时，这个就很糟了。
 
 For example, ***if you want to find all the guys*** who work in the UK, you’ll have to look at each row to find if the row belongs to the UK. ***This will cost you N operations*** (N being the number of rows) which is not bad but could there be a faster way? This is where trees come into play.    
-例如，***如果你想找到所有工作在UK的人***，你将不得不查看每一行看这一行是否属于UK。***这将消耗你N步操作***（N是行数），这并不算太坏，但是否又有更好的方式呢？这就是为什么要引入tree。 
+例如，***如果你想找到所有工作在英国的人***，你将不得不查看每一行看这一行是否属于英国。***这将消耗你N步操作***（N是行数），这并不算太坏，但是否又有更好的方式呢？这就是为什么要引入tree。 
 
 
  
 
-Note: Most modern databases provide advanced arrays to store tables efficiently like heap-organized tables or index-organized tables. But it doesn’t change the problem of fast searching for a specific condition on a group of columns.
-注意：大多数现代数据库提供了增强型数组
+Note: Most modern databases provide advanced arrays to store tables efficiently like heap-organized tables or index-organized tables. But it doesn’t change the problem of fast searching for a specific condition on a group of columns.     
+注意：大多数现代数据库提供了增强型数组来高效的存储表单，例如：堆组织表或索引组织表。但是他并没有解决特殊值在列集合中的快速查找问题。
 
 
 ####Tree and database index
@@ -382,10 +382,10 @@ A binary search tree is a binary tree with a special property, the key in each n
 * 小于所有右子树的键值
  
 
-Let’s see what it means visually
+Let’s see what it means visually    
 让我们直观的看看上面的含义
 
-**The idea**
+**The idea**    
 **概念**
 ![Binary Search Tree](http://coding-geek.com/wp-content/uploads/2015/08/BST.png)
  
@@ -423,117 +423,208 @@ In the end, both searches cost me the number of levels inside the tree. If you r
 
  
 
-***Back to our problem***
+***Back to our problem***    
 ***回到我们的问题上***
 
 But this stuff is very abstract so let’s go back to our problem. Instead of a stupid integer, imagine the string that represents the country of someone in the previous table. Suppose you have a tree that contains the column “country” of the table:
+<br>
+* If you want to know who is working in the UK
+* you look at the tree to get the node that represents the UK
+* inside the “UK node” you’ll find the locations of the rows of the UK workers.
 
-If you want to know who is working in the UK
-you look at the tree to get the node that represents the UK
-inside the “UK node” you’ll find the locations of the rows of the UK workers.
-This search only costs you log(N) operations instead of N operations if you directly use the array. What you’ve just imagined was a database index.
+但是这些东西还是比较抽象，我们回到我们具体的问题中。取代了前一张表中呆滞的整型，假想用字符串来表示某人的国籍。假设你又一棵包含了表格中“国籍”列的树：
+<br>
+* 如果你想知道谁在英国工作
+* 你查找这棵树来获取代表英国的节点
+* 在“英国节点”中，你将找到英国工人的行地址。    
 
-You can build a tree index for any group of columns (a string, an integer, 2 strings, an integer and a string, a date …) as long as you have a function to compare the keys (i.e. the group of columns) so that you can establish an order among the keys (which is the case for any basic types in a database).
+This search only costs you log(N) operations instead of N operations if you directly use the array. What you’ve just imagined was a ***database index***.    
+这个查找仅需要log(N)次操作而不是像使用数组一样需要N次操作。你们刚才猜想的就是***数据库索引***。
+
+
+You can build a tree index for any group of columns (a string, an integer, 2 strings, an integer and a string, a date …) as long as you have a function to compare the keys (i.e. the group of columns) so that you can establish an ***order among the keys*** (which is the case for any basic types in a database).    
+只要你有比较键值（例如 列组）的方法来建立***键值顺序***（这对于数据库中的任何一个基本类型都很重要），你可以建立任意列组的树形索引（字符串，整型，2个字符串，一个整型和一个字符串，日期...）。
 
  
 
-B+Tree Index
+####B+Tree Index
+####B+树索引
 
-Although this tree works well to get a specific value, there is a BIG problem when you need to get multiple elements between two values. It will cost O(N) because you’ll have to look at each node in the tree and check if it’s between these 2 values (for example, with an in-order traversal of the tree). Moreover this operation is not disk I/O friendly since you’ll have to read the full tree. We need to find a way to efficiently do a range query. To answer this problem, modern databases use a modified version of the previous tree called B+Tree. In a B+Tree:
+Although this tree works well to get a specific value, there is a BIG problem when you need to ***get multiple elements between two values***. It will cost O(N) because you’ll have to look at each node in the tree and check if it’s between these 2 values (for example, with an in-order traversal of the tree). Moreover this operation is not disk I/O friendly since you’ll have to read the full tree. We need to find a way to efficiently do a ***range query***. To answer this problem, modern databases use a modified version of the previous tree called B+Tree. In a B+Tree:
+<br>
+* only the lowest nodes (the leaves) store information (the location of the rows in the associated table)
+* the other nodes are just here to route to the right node during the search.    
 
-only the lowest nodes (the leaves) store information (the location of the rows in the associated table)
-the other nodes are just here to route to the right node during the search.
+尽管树形对于获取特殊值表现良好，但是当你需要***获取在两个值范围之间的多条数据***时还是存在着一个大问题。因为你必须查询树种的每个节点看其是否在两值范围之间（例如，顺序遍历整棵树）。更糟的是这种操作很是占用磁盘I/O，因为你将不得不读取整棵树。我们需要找到一种有效的方式来做***范围查询***。为了解决这个问题，现代数据库用了一个之前树形结构的变形，叫做B+树。在B+树中：
+<br>
+* 仅只有最底层的节点(叶子节点)存储信息（相关表的行坐标）
+* 其他节点仅在搜索过程中起导向到对应节点的作用。    
+
 ![B+ Tree](http://coding-geek.com/wp-content/uploads/2015/08/database_index.png)
-As you can see, there are more nodes (twice more). Indeed, you have additional nodes, the “decision nodes” that will help you to find the right node (that stores the location of the rows in the associated table). But the search complexity is still in O(log(N)) (there is just one more level). The big difference is that the lowest nodes are linked to their successors.
+As you can see, there are more nodes (twice more). Indeed, you have additional nodes, the “decision nodes” that will help you to find the right node (that stores the location of the rows in the associated table). But the search complexity is still in O(log(N)) (there is just one more level). The big difference is that ***the lowest nodes are linked to their successors***.    
+
+如你所见，这将引入更多的节点（两倍多）。的确，你需要更多额外的节点，这些“决策节点”来帮助你找到目标节点（存储了相关表的行坐标信息的节点）。但是搜索的复杂度仍然是O(log(N))（仅仅是多了一层）。最大的区别在于***最底层的节点指向了目标***。   
 
 With this B+Tree, if you’re looking for values between 40 and 100:
 
-You just have to look for 40 (or the closest value after 40 if 40 doesn’t exist) like you did with the previous tree.
-Then gather the successors of 40 using the direct links to the successors until you reach 100.
-Let’s say you found M successors and the tree has N nodes. The search for a specific node costs log(N) like the previous tree. But, once you have this node, you get the M successors in M operations with the links to their successors. This search only costs M + log(N) operations vs N operations with the previous tree. Moreover, you don’t need to read the full tree (just M + log(N) nodes), which means less disk usage. If M is low (like 200 rows) and N large (1 000 000 rows) it makes a BIG difference.
+* You just have to look for 40 (or the closest value after 40 if 40 doesn’t exist) like you did with the previous tree.
+* Then gather the successors of 40 using the direct links to the successors until you reach 100.    
+
+
+Let’s say you found M successors and the tree has N nodes. The search for a specific node costs log(N) like the previous tree. But, once you have this node, you get the M successors in M operations with the links to their successors. ***This search only costs M + log(N)*** operations vs N operations with the previous tree. Moreover, you don’t need to read the full tree (just M + log(N) nodes), which means less disk usage. If M is low (like 200 rows) and N large (1 000 000 rows) it makes a BIG difference.    
+
+假设你使用B+树来搜索40到100之间的值：
+<br>
+* 你必须像上一树形结构中一样查找40的值（或者如果40不存在，就找最接近40的值）。
+* 40的结果集合直接链接了直到100的结果。
+
+假设你找到了M个结果，并且整棵树有N个节点。如同上一树形结构一样查找特殊节点需要log(N)步操作。但是一旦你找到这个节点，你就可以通过指向他们结果集的M步操作来获取M个结果。***这样的查找方式仅需要M + log(N)步操作***相对于上一棵树形结构中的N步操作。更好的是你不必讲整棵树读取进来（只需要读取M + log(N) 个节点），这意味着更少的磁盘消耗。如果M足够小（比如200行）而N足够大（1 000 000行），这会产生巨大的差别。
+
 
  
 
 But there are new problems (again!). If you add or remove a row in a database (and therefore in the associated B+Tree index):
 
-you have to keep the order between nodes inside the B+Tree otherwise you won’t be able to find nodes inside the mess.
-you have to keep the lowest possible number of levels in the B+Tree otherwise the time complexity in O(log(N)) will become O(N).
-I other words, the B+Tree needs to be self-ordered and self-balanced. Thankfully, this is possible with smart deletion and insertion operations. But this comes with a cost: the insertion and deletion in a B+Tree are in O(log(N)). This is why some of you have heard that using too many indexes is not a good idea. Indeed, you’re slowing down the fast insertion/update/deletion of a row in a table since the database needs to update the indexes of the table with a costly O(log(N)) operation per index. Moreover, adding indexes means more workload for the transaction manager (we will see this manager at the end of the article).
+* you have to keep the order between nodes inside the B+Tree otherwise you won’t be able to find nodes inside the mess.
+* you have to keep the lowest possible number of levels in the B+Tree otherwise the time complexity in O(log(N)) will become O(N).    
 
-For more details, you can look at the Wikipedia article about B+Tree. If you want an example of a B+Tree implementation in a database, look at this article and this article from a core developer of MySQL. They both focus on how innoDB (the engine of MySQL) handles indexes.
+但是又会产生新的问题（又来了！）。如果你在数据库中增加或删除一行（与此同时在相关的B+树索引中也要进行相应操作）：
+* 你必须保证B+树中的节点顺序，否则你不能在混乱中找到目标节点。
+* 你必须保证B+树中尽可能最小的层数，否则时间复杂度会从O(log(N))变为O(N)。
 
-Note: I was told by a reader that, because of low-level optimizations, the B+Tree needs to be fully balanced.
+I other words, the B+Tree needs to be self-ordered and self-balanced. Thankfully, this is possible with smart deletion and insertion operations. But this comes with a cost: the insertion and deletion in a B+Tree are in O(log(N)). This is why some of you have heard that ***using too many indexes is not a good idea***. Indeed, ***you’re slowing down the fast insertion/update/deletion of a row*** in a table since the database needs to update the indexes of the table with a costly O(log(N)) operation per index. Moreover, adding indexes means more workload for the ***transaction manager*** (we will see this manager at the end of the article).
+
+换句话说，B+树需要是自生顺序的和自平衡的。幸好使用智能删除和插入操作，这些都是可行的。但是这就引入了一个消耗：在一个B+树中的插入操作和删除操作的复杂度都是O(log(N))。这就是为什么你们有些人听说的***使用太多的索引并不是一个好办法***的原因。确实，***你降低了在表中行的快速插入/更新/删除***，以为数据库要为每个索引更新数据表的索引集都需要消耗O(log(N))次操作。更糟的是，添加索引意味着***事务管理***(我们将在本文最后看到这个管理)更多的工作量。
+
+For more details, you can look at the Wikipedia [`article about B+Tree`](https://en.wikipedia.org/wiki/B%2B_tree). If you want an example of a B+Tree implementation in a database, look at [`this article`](http://blog.jcole.us/2013/01/07/the-physical-structure-of-innodb-index-pages/) and [`this article`](http://blog.jcole.us/2013/01/10/btree-index-structures-in-innodb/) from a core developer of MySQL. They both focus on how innoDB (the engine of MySQL) handles indexes.    
+更多详情，可以查看维基百科[`B+树资料`](https://en.wikipedia.org/wiki/B%2B_tree)。如果你想知道数据库中B+树的实现细节，请查看来自MySQL核心开发者的[`博文`](http://blog.jcole.us/2013/01/07/the-physical-structure-of-innodb-index-pages/)和[`博文`](http://blog.jcole.us/2013/01/10/btree-index-structures-in-innodb/)。这两个材料都是聚焦于innoDB(MySQL数据库引擎)如何处理索引。    
+
+Note: I was told by a reader that, because of low-level optimizations, the B+Tree needs to be fully balanced.    
+注意：因为我被一个读者告知，由于低级优化，B+树需要完全平衡。
 
  
 
-Hash table
-
-Our last important data structure is the hash table. It’s very useful when you want to quickly look for values.  Moreover, understanding the hash table will help us later to understand a common database join operation called the hash join. This data structure is also used by a database to store some internal stuff (like the lock table or the buffer pool, we’ll see both concepts later)
+####Hash table
+####哈希表
+Our last important data structure is the hash table. It’s very useful when you want to quickly look for values.  Moreover, understanding the hash table will help us later to understand a common database join operation called ***the hash join***. This data structure is also used by a database to store some internal stuff (like the ***lock table*** or the ***buffer pool***, we’ll see both concepts later)    
+我们最后一个重要的数据结构是哈希表。当你想快速查找值的时候这会非常有用。更好的是了解哈希表有助于掌握数据库通用连接操作中的***哈希连接***。这个数据结构也用于数据库存储一些中间量（如我们稍后会提到的***锁表***或***缓冲池***概念）。
 
 The hash table is a data structure that quickly finds an element with its key. To build a hash table you need to define:
+<br>
+* ***a key*** for your elements
+* ***a hash function*** for the keys. The computed hashes of the keys give the locations of the elements (called buckets).
+* ***a function to compare the keys***. Once you found the right bucket you have to find the element you’re looking for inside the bucket using this comparison.    
 
-a key for your elements
-a hash function for the keys. The computed hashes of the keys give the locations of the elements (called buckets).
-a function to compare the keys. Once you found the right bucket you have to find the element you’re looking for inside the bucket using this comparison.
+哈希表是一种利用其键值快速查找元素的数据结构。为了建立哈希表，你需要定义：
+<br>
+* 为元素建立的***键***
+* 为键建立的***哈希方法***。为键算出的哈希值可以定位元素（称为哈希桶）。
+* ***键之间的比较方法***。一旦你找到了目标桶，你必须使用这个比较方法来查找桶内的元素。
  
 
-A simple example
+***A simple example***    
+***一个简单例子***
 
-Let’s have a visual example:
+Let’s have a visual example:    
+让我们来看看图形示例：
 ![Hash Map](http://coding-geek.com/wp-content/uploads/2015/08/hash_table.png)
 This hash table has 10 buckets. Since I’m lazy I only drew 5 buckets but I know you’re smart so I let you imagine the 5 others. The Hash function I used is the modulo 10 of the key. In other words I only keep the last digit of the key of an element to find its bucket:
 
-if the last digit is 0 the element ends up in the bucket 0,
-if the last digit is 1 the element ends up in the bucket 1,
-if the last digit is 2 the element ends up in the bucket 2,
-…
-The compare function I used is simply the equality between 2 integers.
+* if the last digit is 0 the element ends up in the bucket 0,
+* if the last digit is 1 the element ends up in the bucket 1,
+* if the last digit is 2 the element ends up in the bucket 2,
+* …    
 
+这个哈希表有10个哈希桶。换句话说，我只使用元素的最后一个数字来查找它的哈希桶：
+* 如果元素的最后一个数字是0，那么就存在于0号哈希桶中，
+* 如果元素的最后一个数字是1，那么就存在于1号哈希桶中，
+* 如果元素的最后一个数字是2，那么就存在于2号哈希桶中，
+* ...
+
+
+The compare function I used is simply the equality between 2 integers.    
+我所使用的比较方法仅仅是简单的比较2个整型是否相等。    
 Let’s say you want to get the element 78:
+<br>
+* The hash table computes the hash code for 78 which is 8.
+* It looks in the bucket 8, and the first element it finds is 78.
+* It gives you back the element 78
+* ***The search only costs 2 operations*** (1 for computing the hash value and the other for finding the element inside the bucket).
+<br>
 
-The hash table computes the hash code for 78 which is 8.
-It looks in the bucket 8, and the first element it finds is 78.
-It gives you back the element 78
-The search only costs 2 operations (1 for computing the hash value and the other for finding the element inside the bucket).
+假设你想查找一个78的元素：
+<br>
+* 哈希表首先计算出78的哈希值是8。
+* 接下来它查看8号哈希桶，并找到第一个元素就是78。
+* 它就返回给你78的元素
+* ***这次查找仅需要2步操作***（1步是计算哈希值而另一步则是查找哈希桶里面的元素）。
+
 Now, let’s say you want to get the element 59:
-
-The hash table computes the hash code for 59 which is 9.
-It looks in the bucket 9, and the first element it finds is 99. Since 99!=59, element 99 is not the right element.
-Using the same logic, it looks at the second element (9), the third (79), … , and the last (29).
-The element doesn’t exist.
-The search costs 7 operations.
+<br>
+* The hash table computes the hash code for 59 which is 9.
+* It looks in the bucket 9, and the first element it finds is 99. Since 99!=59, element 99 is not the right element.
+* Using the same logic, it looks at the second element (9), the third (79), … , and the last (29).
+* The element doesn’t exist.
+* ***The search costs 7 operations***.
  
+接下来，假设你想找到59的元素：
+* 哈希表首先计算59的哈希值为9。
+* 它查找9号哈希桶，第一个找到的元素是99。因为99!=59，99元素不是目标元素。
+* 使用相同的逻辑，它找到第二个元素(9)，第三个(79)，...，直到最后一个(29)。
+* 该元素不存在。
 
-A good hash function
+***A good hash function***    
+***优秀的哈希方法***
 
-As you can see, depending on the value you’re looking for, the cost is not the same!
+As you can see, depending on the value you’re looking for, the cost is not the same!    
+如你所见，根据你查找的值不同，消耗也是不同的！    
 
-If I now change the hash function with the modulo 1 000 000 of the key (i.e. taking the last 6 digits), the second search only costs 1 operation because there are no elements in the bucket 000059. The real challenge is to find a good hash function that will create buckets that contain a very small amount of elements.
+
+If I now change the hash function with the modulo 1 000 000 of the key (i.e. taking the last 6 digits), the second search only costs 1 operation because there are no elements in the bucket 000059. ***The real challenge is to find a good hash function that will create buckets that contain a very small amount of elements***.    
+如果现在我改用键值除以1 000 000的哈希方法（也就是取最后6位数字），第二个查找方法仅需要1步操作，因为不存在000059号的哈希桶。***真正的挑战是找到一个创建能容纳足够小元素的哈希桶的哈希方法***。
+
 
 In my example, finding a good hash function is easy. But this is a simple example, finding a good hash function is more difficult when the key is:
 
-a string (for example the last name of a person)
-2 strings (for example the last name and the first name of a person)
-2 strings and a date (for example the last name, the first name and the birth date of a person)
-…
-With a good hash function, the search in a hash table is in O(1).
+* a string (for example the last name of a person)
+* 2 strings (for example the last name and the first name of a person)
+* 2 strings and a date (for example the last name, the first name and the birth date of a person)
+* …
+
+在我的例子中，找到一个好的哈希方法是非常容易的。但是由于这是个简单的例子，当面对如下键时，找到哈希方法就非常困难了：
+* 字符串(例如人的姓氏)
+* 2个字符串(例如人的姓氏和名字)
+* 2个字符串和一个日期(例如人的姓氏，名字以及生日)
+* ...    
+
+
+***With a good hash function, the search in a hash table is in O(1)***.    
+***如果有一好的哈希方法，在哈希表中查找的复杂度将是O(1)***。
 
  
 
-Array vs hash table
+***Array vs hash table***    
+***数组与哈希表的比较***
 
-Why not using an array?
+Why not using an array?    
+为什么不使用数组?    
+Hum, you’re asking a good question.    
+嗯, 你问了一个好问题。    
 
-Hum, you’re asking a good question.
+* A hash table can be ***half loaded in memory*** and the other buckets can stay on disk.
+* With an array you have to use a contiguous space in memory. If you’re loading a large table it’s ***very difficult to have enough contiguous space***.
+* With a hash table you can ***choose the key you want*** (for example the country AND the last name of a person).    
 
-A hash table can be half loaded in memory and the other buckets can stay on disk.
-With an array you have to use a contiguous space in memory. If you’re loading a large table it’s very difficult to have enough contiguous space.
-With a hash table you can choose the key you want (for example the country AND the last name of a person).
-For more information, you can read my article on the Java HashMap which is an efficient hash table implementation; you don’t need to understand Java to understand the concepts inside this article.
+* 哈希表能***一半在内存中加载***，而其余的哈希桶保存在磁盘上。
+* 如果使用数组，你必须使用内存中的连续内存。如果你正在加载一张较大的表，系统是***很难分配出足够大的连续空间的***。
+* 如果使用哈希表，你可以***任意选择你想要的键***(例如：国家 AND 姓氏)。 
+
+For more information, you can read my article on the [`Java HashMap`](http://coding-geek.com/how-does-a-hashmap-work-in-java/) which is an efficient hash table implementation; you don’t need to understand Java to understand the concepts inside this article.   
+想要更多的信息，你可以阅读我的博文一个高效哈希表的实现[`Java HashMap`](http://coding-geek.com/how-does-a-hashmap-work-in-java/)；你可以读懂这个文章内容而不必掌握Java。
 
  
 
-Global overview
+##Global overview
 We’ve just seen the basic components inside a database. We now need to step back to see the big picture.
 
 A database is a collection of information that can easily be accessed and modified. But a simple bunch of files could do the same. In fact, the simplest databases like SQLite are nothing more than a bunch of files. But SQLite is a well-crafted bunch of files because it allows you to:
